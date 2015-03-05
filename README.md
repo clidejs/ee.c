@@ -1,7 +1,7 @@
 # clidejs/ee.c
 
 simple event emitter implementation for c/c++ inspired by
-[nodejs events.EventEmitter][1].
+[nodejs events.EventEmitter](http://nodejs.org/api/events.html#events_class_events_eventemitter).
 
 ## Usage
 
@@ -37,6 +37,3 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-    [1]: http://nodejs.org/api/events.html#events_class_events_eventemitter
