@@ -32,24 +32,11 @@ extern "C" {
 // for malloc, free
 #include <stdlib.h>
 
-struct ee__event_s {
-  int id; // event identifier
-  ee__event_t *next;
-  ee__listener_t *root;
-};
-
-struct ee__listener_s {
-  EE_CB_TYPE(cb);
-  ee__listener_t *next;
-};
-
-struct ee_emitter_s {
-  ee__event_t *root;
-};
-
 // initialize empty emitter
-void ee_init(ee_emitter_t *emitter) {
+void ee_init(ee_emitter_t *emitter,
+    int (*emit)(ee__listener_t *, EE_DATA_TYPE())) {
   emitter->root = 0;
+  emitter->emit = emit;
 }
 
 void ee_on(ee_emitter_t *emitter, int event, EE_CB_TYPE(cb)) {
@@ -100,8 +87,32 @@ int ee_emit(ee_emitter_t *emitter, int event, EE_DATA_TYPE(data)) {
     l = ee__event_find(emitter->root, event)->root;
   }
   if(l != 0) {
+    if(emitter->emit) {
+      return emitter->emit(l, data);
+    } else {
+      do {
+        if(l->cb) {
+          l->cb(data);
+        }
+        ++count;
+      } while((l = l->next));
+    }
+  }
+  return count;
+}
+
+int ee_count(ee_emitter_t *emitter, int event) {
+  ee__listener_t *l;
+  int count = 0;
+  if(emitter->root == 0) {
+    return count;
+  } else if(emitter->root->id == event) {
+    l = emitter->root->root;
+  } else {
+    l = ee__event_find(emitter->root, event)->root;
+  }
+  if(l != 0) {
     do {
-      EE_CB_CALL(l->cb, data);
       ++count;
     } while((l = l->next));
   }
@@ -114,7 +125,6 @@ void ee_destroy(ee_emitter_t *emitter) {
     emitter->root = tmp->next;
     ee__event_destroy(tmp);
   }
-  free(emitter);
 }
 
 ee__listener_t *ee__listener_new(EE_CB_TYPE(cb)) {

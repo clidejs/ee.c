@@ -31,6 +31,7 @@
 void callback(void *ptr) {
   std::cout << ptr << std::endl;
 }
+
 int main() {
   ee_emitter_t *ee =(ee_emitter_t *)malloc(sizeof(ee_emitter_t));
   ee_init(ee);

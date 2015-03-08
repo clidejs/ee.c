@@ -37,19 +37,32 @@ extern "C" {
 #define EE_CB_TYPE(name) void(*name)(EE_DATA_TYPE())
 #endif
 
-#ifndef EE_CB_CALL
-#define EE_CB_CALL(cb, data) cb(data)
-#endif
-
 typedef struct ee__event_s ee__event_t;
 typedef struct ee__listener_s ee__listener_t;
-
 typedef struct ee_emitter_s ee_emitter_t;
 
-void ee_init(ee_emitter_t *emitter);
+struct ee__event_s {
+  int id; // event identifier
+  ee__event_t *next;
+  ee__listener_t *root;
+};
+
+struct ee__listener_s {
+  EE_CB_TYPE(cb);
+  ee__listener_t *next;
+};
+
+struct ee_emitter_s {
+  ee__event_t *root;
+  int (*emit)(ee__listener_t *, EE_DATA_TYPE());
+};
+
+void ee_init(ee_emitter_t *emitter,
+    int (*emit)(ee__listener_t *, EE_DATA_TYPE()) = 0);
 void ee_on(ee_emitter_t *emitter, int event, EE_CB_TYPE(cb));
 void ee_off(ee_emitter_t *emitter, int event, EE_CB_TYPE(cb));
 int ee_emit(ee_emitter_t *emitter, int event, EE_DATA_TYPE(data));
+int ee_count(ee_emitter_t *emitter, int event);
 void ee_destroy(ee_emitter_t *emitter);
 
 ee__listener_t *ee__listener_new(EE_CB_TYPE(cb));
