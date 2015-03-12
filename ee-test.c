@@ -34,7 +34,7 @@ void callback(void *ptr) {
 
 int main() {
   ee_emitter_t *ee =(ee_emitter_t *)malloc(sizeof(ee_emitter_t));
-  ee_init(ee);
+  ee_init(ee, 0);
 
   ee_on(ee, EVENT_NAME, callback);
 
