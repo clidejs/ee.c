@@ -1,4 +1,4 @@
-/* ee - eventemitter for c - ee-test.c
+/* ee - eventemitter for c - ee-test.cpp
  * https://github.com/clidejs/ee.c
  *
  * Copyright Bernhard Bücherl <bernhard.buecherl@gmail.com>
@@ -24,12 +24,14 @@
 
 #include "ee.h"
 #include "ee.c"
-#include <iostream>
+#include <vector>
 
 #define EVENT_NAME 1
 
+std::vector<void *> out;
+
 void callback(void *ptr) {
-  std::cout << ptr << std::endl;
+    out.push_back(ptr);
 }
 
 int main() {
@@ -45,5 +47,6 @@ int main() {
   ee_emit(ee, EVENT_NAME, 0);
 
   ee_destroy(ee);
-  return 0;
+
+  return (out.size() == 1 ? 0 : out.size() - 10);
 }
